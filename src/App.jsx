@@ -128,7 +128,7 @@ export default function App() {
         <div className="landing-card">
           <div className="landing-header">
             <img 
-              src="/logo-kudus.png" 
+              src={`${import.meta.env.BASE_URL}logo-kudus.png`} 
               alt="Logo Kabupaten Kudus" 
               className="landing-logo"
             />

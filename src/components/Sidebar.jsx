@@ -6,7 +6,7 @@ export default function Sidebar({ activeMenu, onMenuChange }) {
     <aside className="sidebar">
       <div className="sidebar-brand">
         <img 
-          src="/logo-kudus.png" 
+          src={`${import.meta.env.BASE_URL}logo-kudus.png`} 
           alt="Logo Kudus" 
           className="sidebar-logo" 
         />

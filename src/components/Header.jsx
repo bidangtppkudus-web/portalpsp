@@ -5,7 +5,7 @@ export default function Header({ user, onLoginClick, onLogout, stats }) {
     <header className="app-header">
       <div className="header-branding">
         <img 
-          src="/logo-kudus.png" 
+          src={`${import.meta.env.BASE_URL}logo-kudus.png`} 
           alt="Logo Kabupaten Kudus" 
           className="header-logo"
         />

@@ -22,7 +22,7 @@ export default function LoginModal({ onClose, onLoginSuccess }) {
       <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '400px' }}>
         <div className="modal-header">
           <h3 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <img src="/logo-kudus.png" alt="Logo Kudus" style={{ height: '26px', width: 'auto' }} />
+            <img src={`${import.meta.env.BASE_URL}logo-kudus.png`} alt="Logo Kudus" style={{ height: '26px', width: 'auto' }} />
             Masuk Administrator
           </h3>
           <button className="btn-close-modal" onClick={onClose}>
