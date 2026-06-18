@@ -74,7 +74,7 @@ export default function Gallery({ data }) {
               <div className="gallery-card-body">
                 <h3>{item.nama}</h3>
                 <div className="gallery-card-meta">
-                  <span>{item.lokasi}, {item.kecamatan}</span>
+                  <span>{item.desa || item.lokasi}, {item.kecamatan}</span>
                   <span style={{ fontWeight: 600, color: 'var(--primary-medium)' }}>{item.tahun}</span>
                 </div>
               </div>
@@ -115,8 +115,8 @@ export default function Gallery({ data }) {
                 <div>
                   <strong>Kecamatan:</strong> {activeLightbox.kecamatan}
                 </div>
-                <div>
-                  <strong>Desa/Lokasi:</strong> {activeLightbox.lokasi}
+                <div className="lightbox-detail-item">
+                  <strong>Desa/Lokasi:</strong> {activeLightbox.desa || activeLightbox.lokasi}
                 </div>
                 <div>
                   <strong>Kondisi Asset:</strong> <span style={{ 

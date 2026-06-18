@@ -18,7 +18,7 @@ export default function DataTable({
   const filteredData = data.filter(item => {
     const matchesSearch = 
       item.nama.toLowerCase().includes(search.toLowerCase()) ||
-      item.lokasi.toLowerCase().includes(search.toLowerCase()) ||
+      (item.desa || item.lokasi || '').toLowerCase().includes(search.toLowerCase()) ||
       item.kecamatan.toLowerCase().includes(search.toLowerCase());
     
     const matchesStatus = statusFilter === '' || item.status === statusFilter;
@@ -43,7 +43,7 @@ export default function DataTable({
       item.id,
       categoryLabel,
       item.nama,
-      item.lokasi,
+      item.desa || item.lokasi || '',
       item.kecamatan,
       item.lat,
       item.lng,
@@ -73,7 +73,7 @@ export default function DataTable({
       item.id,
       categoryLabel,
       item.nama,
-      item.lokasi,
+      item.desa || item.lokasi || '',
       item.kecamatan,
       item.lat,
       item.lng,
@@ -181,7 +181,7 @@ export default function DataTable({
                     <div style={{ fontWeight: 600, color: 'var(--primary-deep)' }}>{item.nama}</div>
                     <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Lat: {item.lat}, Lng: {item.lng}</div>
                   </td>
-                  <td>{item.lokasi}</td>
+                  <td>{item.desa || item.lokasi}</td>
                   <td>{item.kecamatan}</td>
                   <td>{item.tahun}</td>
                   <td>

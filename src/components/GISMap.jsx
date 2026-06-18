@@ -80,8 +80,8 @@ export default function GISMap({ data }) {
                   <span class="map-popup-val">${item.kecamatan}</span>
                 </div>
                 <div class="map-popup-row">
-                  <span class="map-popup-label">Desa/Lokasi:</span>
-                  <span class="map-popup-val">${item.lokasi}</span>
+                  <span class="map-popup-label">Lokasi:</span>
+                  <span class="map-popup-val">${item.desa || item.lokasi || ''}</span>
                 </div>
                 <div class="map-popup-row">
                   <span class="map-popup-label">Kategori:</span>

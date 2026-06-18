@@ -21,7 +21,7 @@ export default function CrudModal({ item, categoryKey, onClose, onSave }) {
     if (item) {
       setFormData({
         nama: item.nama || '',
-        lokasi: item.lokasi || '',
+        lokasi: item.desa || item.lokasi || '',
         kecamatan: item.kecamatan || KECAMATAN_KUDUS[0],
         lat: item.lat || '',
         lng: item.lng || '',
