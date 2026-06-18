@@ -6,7 +6,8 @@ import GISMap from './components/GISMap';
 import Gallery from './components/Gallery';
 import CrudModal from './components/CrudModal';
 import LoginModal from './components/LoginModal';
-import { INITIAL_DATA, CATEGORIES } from './data/seedData';
+import { CATEGORIES } from './data/seedData';
+import { supabase } from './lib/supabase';
 
 export default function App() {
   // Authentication State
@@ -27,16 +28,24 @@ export default function App() {
   const [showCrudModal, setShowCrudModal] = useState(false);
   const [crudEditingItem, setCrudEditingItem] = useState(null);
 
+  // Fetch from Supabase
+  const fetchData = async () => {
+    if (!import.meta.env.VITE_SUPABASE_URL) return; // Skip if not configured
+    const { data: supaData, error } = await supabase
+      .from('infrastruktur')
+      .select('*')
+      .order('created_at', { ascending: false });
+    
+    if (error) {
+      console.error('Error fetching data:', error);
+    } else if (supaData) {
+      setData(supaData);
+    }
+  };
+
   // Initialize Data & User Session on Mount
   useEffect(() => {
-    // Load data from localStorage or seed it
-    const storedData = localStorage.getItem('portal_psp_data');
-    if (storedData) {
-      setData(JSON.parse(storedData));
-    } else {
-      setData(INITIAL_DATA);
-      localStorage.setItem('portal_psp_data', JSON.stringify(INITIAL_DATA));
-    }
+    fetchData();
 
     // Load user session
     const storedUser = localStorage.getItem('portal_psp_admin');
@@ -84,26 +93,70 @@ export default function App() {
   };
 
   // CRUD Handlers
-  const handleSaveItem = (itemForm) => {
-    let updatedData;
+  const handleSaveItem = async (itemForm) => {
     if (crudEditingItem) {
-      // Edit mode: replace item
-      updatedData = data.map(item => item.id === itemForm.id ? itemForm : item);
+      // Edit mode
+      const { error } = await supabase
+        .from('infrastruktur')
+        .update({
+          nama: itemForm.nama,
+          category: itemForm.category,
+          kecamatan: itemForm.kecamatan,
+          desa: itemForm.desa,
+          status: itemForm.status,
+          lat: itemForm.lat,
+          lng: itemForm.lng,
+          foto: itemForm.foto
+        })
+        .eq('id', itemForm.id);
+      
+      if (!error) {
+        setData(data.map(item => item.id === itemForm.id ? itemForm : item));
+      } else {
+        alert("Gagal mengupdate data. Pastikan konfigurasi Supabase benar.");
+        console.error(error);
+      }
     } else {
-      // Add mode: append to start
-      updatedData = [itemForm, ...data];
+      // Add mode
+      const { data: newRow, error } = await supabase
+        .from('infrastruktur')
+        .insert([{
+          nama: itemForm.nama,
+          category: itemForm.category,
+          kecamatan: itemForm.kecamatan,
+          desa: itemForm.desa,
+          status: itemForm.status,
+          lat: itemForm.lat,
+          lng: itemForm.lng,
+          foto: itemForm.foto
+        }])
+        .select()
+        .single();
+      
+      if (!error && newRow) {
+        setData([newRow, ...data]);
+      } else {
+        alert("Gagal menambah data. Pastikan konfigurasi Supabase benar.");
+        console.error(error);
+      }
     }
-    setData(updatedData);
-    localStorage.setItem('portal_psp_data', JSON.stringify(updatedData));
     setShowCrudModal(false);
     setCrudEditingItem(null);
   };
 
-  const handleDeleteItem = (itemToDelete) => {
+  const handleDeleteItem = async (itemToDelete) => {
     if (window.confirm(`Apakah Anda yakin ingin menghapus data "${itemToDelete.nama}"?`)) {
-      const updatedData = data.filter(item => item.id !== itemToDelete.id);
-      setData(updatedData);
-      localStorage.setItem('portal_psp_data', JSON.stringify(updatedData));
+      const { error } = await supabase
+        .from('infrastruktur')
+        .delete()
+        .eq('id', itemToDelete.id);
+        
+      if (!error) {
+        setData(data.filter(item => item.id !== itemToDelete.id));
+      } else {
+        alert("Gagal menghapus data");
+        console.error(error);
+      }
     }
   };
 
