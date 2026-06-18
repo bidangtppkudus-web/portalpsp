@@ -104,6 +104,7 @@ export default function App() {
           kecamatan: itemForm.kecamatan,
           desa: itemForm.lokasi,
           status: itemForm.status,
+          tahun: itemForm.tahun,
           lat: itemForm.lat,
           lng: itemForm.lng,
           foto: itemForm.foto
@@ -126,6 +127,7 @@ export default function App() {
           kecamatan: itemForm.kecamatan,
           desa: itemForm.lokasi,
           status: itemForm.status,
+          tahun: itemForm.tahun,
           lat: itemForm.lat,
           lng: itemForm.lng,
           foto: itemForm.foto
