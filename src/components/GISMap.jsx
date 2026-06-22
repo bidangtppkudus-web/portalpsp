@@ -10,6 +10,32 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
 });
 
+export const CATEGORY_COLORS = {
+  jaringan_irigasi: '#1e3a8a',      // Dark Blue (D.I. & Saluran)
+  irigasi_perpompaan: '#10b981',    // Emerald Green (Pompa)
+  irigasi_perpipaan: '#06b6d4',      // Cyan (Pipa)
+  jalan_usaha_tani: '#f59e0b',       // Amber/Orange (Jalan Tani)
+  alat_mesin_pertanian: '#8b5cf6',   // Purple (Alsintan)
+  bangunan_konvensional: '#e11d48',  // Rose/Red (Bangunan/Gudang)
+};
+
+const createMarkerIcon = (category) => {
+  const color = CATEGORY_COLORS[category] || '#6b7280';
+  const svgHtml = `
+    <svg width="32" height="44" viewBox="-1 -1 32 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M15 0C6.71573 0 0 6.71573 0 15C0 26.25 15 42 15 42C15 42 30 26.25 30 15C30 6.71573 23.2843 0 15 0Z" fill="${color}" stroke="#ffffff" stroke-width="2"/>
+      <circle cx="15" cy="15" r="5.5" fill="#ffffff"/>
+    </svg>
+  `;
+  return L.divIcon({
+    html: svgHtml,
+    className: 'custom-gps-marker',
+    iconSize: [30, 42],
+    iconAnchor: [15, 42],
+    popupAnchor: [0, -42],
+  });
+};
+
 export default function GISMap({ data }) {
   const mapContainerRef = useRef(null);
   const mapRef = useRef(null);
@@ -98,7 +124,9 @@ export default function GISMap({ data }) {
           </div>
         `;
 
-        const marker = L.marker([item.lat, item.lng])
+        const marker = L.marker([item.lat, item.lng], {
+          icon: createMarkerIcon(item.category)
+        })
           .bindPopup(popupHtml, {
             maxWidth: 280,
             closeButton: true
@@ -149,6 +177,22 @@ export default function GISMap({ data }) {
       
       {/* Target element for Leaflet */}
       <div ref={mapContainerRef} className="map-container" id="gis-map-view"></div>
+
+      {/* Legend */}
+      <div className="map-legend">
+        <div className="legend-title">Peta Penyebaran Kegiatan (Kategori)</div>
+        <div className="legend-items">
+          {Object.entries(CATEGORIES).map(([key, label]) => (
+            <div key={key} className="legend-item">
+              <span 
+                className="legend-color-dot" 
+                style={{ backgroundColor: CATEGORY_COLORS[key] || '#6b7280' }}
+              ></span>
+              <span className="legend-item-label">{label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
