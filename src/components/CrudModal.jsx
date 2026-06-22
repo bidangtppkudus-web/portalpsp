@@ -12,6 +12,7 @@ export default function CrudModal({ item, categoryKey, onClose, onSave }) {
     tahun: new Date().getFullYear(),
     detail: '',
     foto: '',
+    panjang_terbangun: '',
   });
 
   const [errors, setErrors] = useState({});
@@ -27,6 +28,7 @@ export default function CrudModal({ item, categoryKey, onClose, onSave }) {
         lng: item.lng || '',
         status: item.status || 'Baik',
         tahun: item.tahun || new Date().getFullYear(),
+        panjang_terbangun: item.panjang_terbangun || '',
         detail: item.detail || '',
         foto: item.foto || '',
       });
@@ -37,7 +39,7 @@ export default function CrudModal({ item, categoryKey, onClose, onSave }) {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: name === 'lat' || name === 'lng' || name === 'tahun' 
+      [name]: name === 'lat' || name === 'lng' || name === 'tahun' || name === 'panjang_terbangun'
         ? (value === '' ? '' : Number(value)) 
         : value
     }));
@@ -114,6 +116,9 @@ export default function CrudModal({ item, categoryKey, onClose, onSave }) {
       id: item ? item.id : `${categoryKey.substring(0, 4)}-${Date.now()}`
     });
   };
+
+  const currentCategory = item ? item.category : categoryKey;
+  const showPanjangTerbangun = ['jaringan_irigasi', 'irigasi_perpipaan', 'jalan_usaha_tani'].includes(currentCategory);
 
   return (
     <div className="modal-overlay" onClick={onClose}>
@@ -242,6 +247,21 @@ export default function CrudModal({ item, categoryKey, onClose, onSave }) {
                 onChange={handleChange}
               />
             </div>
+
+            {showPanjangTerbangun && (
+              <div className="form-group">
+                <label className="form-label">Panjang Terbangun (Meter)</label>
+                <input 
+                  type="number" 
+                  step="0.01"
+                  name="panjang_terbangun" 
+                  className="form-control" 
+                  placeholder="Contoh: 150.5"
+                  value={formData.panjang_terbangun}
+                  onChange={handleChange}
+                />
+              </div>
+            )}
 
             <div className="form-group">
               <label className="form-label">Unggah Foto Kegiatan (Opsional)</label>

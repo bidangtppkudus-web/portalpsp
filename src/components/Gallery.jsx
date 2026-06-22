@@ -128,6 +128,11 @@ export default function Gallery({ data }) {
                 <div>
                   <strong>Tahun Pembangunan:</strong> {activeLightbox.tahun}
                 </div>
+                {activeLightbox.panjang_terbangun && (
+                  <div>
+                    <strong>Panjang Terbangun:</strong> {activeLightbox.panjang_terbangun} m
+                  </div>
+                )}
                 <div style={{ gridColumn: 'span 2' }}>
                   <strong>Koordinat GPS:</strong> Latitude: {activeLightbox.lat} | Longitude: {activeLightbox.lng}
                 </div>

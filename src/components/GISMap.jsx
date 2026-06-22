@@ -83,6 +83,12 @@ export default function GISMap({ data }) {
                   <span class="map-popup-label">Lokasi:</span>
                   <span class="map-popup-val">${item.desa || item.lokasi || ''}</span>
                 </div>
+                ${item.panjang_terbangun ? `
+                <div class="map-popup-row">
+                  <span class="map-popup-label">Panjang:</span>
+                  <span class="map-popup-val">${item.panjang_terbangun} m</span>
+                </div>
+                ` : ''}
                 <div class="map-popup-row">
                   <span class="map-popup-label">Kategori:</span>
                   <span class="map-popup-val">${CATEGORIES[item.category] || item.category}</span>

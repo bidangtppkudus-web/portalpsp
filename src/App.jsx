@@ -105,6 +105,7 @@ export default function App() {
           desa: itemForm.lokasi,
           status: itemForm.status,
           tahun: itemForm.tahun,
+          panjang_terbangun: itemForm.panjang_terbangun || null,
           lat: itemForm.lat,
           lng: itemForm.lng,
           foto: itemForm.foto
@@ -128,6 +129,7 @@ export default function App() {
           desa: itemForm.lokasi,
           status: itemForm.status,
           tahun: itemForm.tahun,
+          panjang_terbangun: itemForm.panjang_terbangun || null,
           lat: itemForm.lat,
           lng: itemForm.lng,
           foto: itemForm.foto

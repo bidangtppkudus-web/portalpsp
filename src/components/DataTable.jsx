@@ -38,7 +38,7 @@ export default function DataTable({
 
   // CSV Exporter for single item
   const exportSingleCSV = (item) => {
-    const headers = ['ID', 'Kategori', 'Nama Sarpras', 'Lokasi (Desa)', 'Kecamatan', 'Latitude', 'Longitude', 'Status Kondisi', 'Tahun Perolehan', 'Keterangan/Detail'];
+    const headers = ['ID', 'Kategori', 'Nama Sarpras', 'Lokasi (Desa)', 'Kecamatan', 'Latitude', 'Longitude', 'Status Kondisi', 'Tahun Perolehan', 'Panjang Terbangun (m)', 'Keterangan/Detail'];
     const row = [
       item.id,
       categoryLabel,
@@ -49,6 +49,7 @@ export default function DataTable({
       item.lng,
       item.status,
       item.tahun,
+      item.panjang_terbangun || '',
       item.detail ? item.detail.replace(/"/g, '""') : ''
     ];
     
@@ -68,7 +69,7 @@ export default function DataTable({
   // CSV Exporter for whole filtered table
   const exportTableCSV = () => {
     if (filteredData.length === 0) return;
-    const headers = ['ID', 'Kategori', 'Nama Sarpras', 'Lokasi (Desa)', 'Kecamatan', 'Latitude', 'Longitude', 'Status Kondisi', 'Tahun Perolehan', 'Keterangan/Detail'];
+    const headers = ['ID', 'Kategori', 'Nama Sarpras', 'Lokasi (Desa)', 'Kecamatan', 'Latitude', 'Longitude', 'Status Kondisi', 'Tahun Perolehan', 'Panjang Terbangun (m)', 'Keterangan/Detail'];
     const rows = filteredData.map(item => [
       item.id,
       categoryLabel,
@@ -79,6 +80,7 @@ export default function DataTable({
       item.lng,
       item.status,
       item.tahun,
+      item.panjang_terbangun || '',
       item.detail ? item.detail.replace(/"/g, '""') : ''
     ]);
     
@@ -179,7 +181,10 @@ export default function DataTable({
                   <td>{indexOfFirstItem + index + 1}</td>
                   <td>
                     <div style={{ fontWeight: 600, color: 'var(--primary-deep)' }}>{item.nama}</div>
-                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Lat: {item.lat}, Lng: {item.lng}</div>
+                    {item.panjang_terbangun && (
+                      <div style={{ fontSize: '0.75rem', color: 'var(--primary-medium)', marginTop: '2px', fontWeight: 600 }}>Panjang: {item.panjang_terbangun} m</div>
+                    )}
+                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '2px' }}>Lat: {item.lat}, Lng: {item.lng}</div>
                   </td>
                   <td>{item.desa || item.lokasi}</td>
                   <td>{item.kecamatan}</td>
