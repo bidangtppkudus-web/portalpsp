@@ -53,14 +53,33 @@ export default function GISMap({ data }) {
   // Initialize Map
   useEffect(() => {
     if (!mapRef.current && mapContainerRef.current) {
-      // Create map
-      mapRef.current = L.map(mapContainerRef.current).setView(kudusCenter, 12);
-      
-      // Load OpenStreetMap Tiles
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      // Load OpenStreetMap (Vector Map) Tiles
+      const streetMap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-      }).addTo(mapRef.current);
+      });
+
+      // Load Esri World Imagery (Satellite) Tiles
+      const satelliteMap = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+        maxZoom: 19,
+        attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+      });
+
+      // Create map with Satellite view as default active layer (Google Earth style)
+      mapRef.current = L.map(mapContainerRef.current, {
+        center: kudusCenter,
+        zoom: 12,
+        layers: [satelliteMap] // Default active layer
+      });
+
+      // Layer switcher configuration
+      const baseMaps = {
+        "Satelit (Google Earth)": satelliteMap,
+        "Peta Jalan (Biasa)": streetMap
+      };
+
+      // Add Layer Switcher Control to top-right corner
+      L.control.layers(baseMaps, null, { position: 'topright' }).addTo(mapRef.current);
 
       // Create a layer group for markers
       markerGroupRef.current = L.layerGroup().addTo(mapRef.current);
