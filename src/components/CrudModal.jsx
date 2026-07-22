@@ -13,6 +13,7 @@ export default function CrudModal({ item, categoryKey, onClose, onSave }) {
     detail: '',
     foto: '',
     panjang_terbangun: '',
+    sumber_anggaran: '',
   });
 
   const [errors, setErrors] = useState({});
@@ -29,6 +30,7 @@ export default function CrudModal({ item, categoryKey, onClose, onSave }) {
         status: item.status || 'Baik',
         tahun: item.tahun || new Date().getFullYear(),
         panjang_terbangun: item.panjang_terbangun || '',
+        sumber_anggaran: item.sumber_anggaran || '',
         detail: item.detail || '',
         foto: item.foto || '',
       });
@@ -262,6 +264,23 @@ export default function CrudModal({ item, categoryKey, onClose, onSave }) {
                 />
               </div>
             )}
+
+            <div className="form-group">
+              <label className="form-label">Sumber Anggaran</label>
+              <select 
+                name="sumber_anggaran" 
+                className="form-control"
+                value={formData.sumber_anggaran}
+                onChange={handleChange}
+              >
+                <option value="">-- Pilih Sumber Anggaran --</option>
+                <option value="APBD">APBD</option>
+                <option value="DAK">DAK</option>
+                <option value="DBHCHT">DBHCHT</option>
+                <option value="Banprov">Banprov</option>
+                <option value="Lainnya">Lainnya</option>
+              </select>
+            </div>
 
             <div className="form-group">
               <label className="form-label">Unggah Foto Kegiatan (Opsional)</label>

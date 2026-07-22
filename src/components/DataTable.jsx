@@ -38,7 +38,7 @@ export default function DataTable({
 
   // CSV Exporter for single item
   const exportSingleCSV = (item) => {
-    const headers = ['ID', 'Kategori', 'Nama Sarpras', 'Lokasi (Desa)', 'Kecamatan', 'Latitude', 'Longitude', 'Status Kondisi', 'Tahun Perolehan', 'Panjang Terbangun (m)', 'Keterangan/Detail'];
+    const headers = ['ID', 'Kategori', 'Nama Sarpras', 'Lokasi (Desa)', 'Kecamatan', 'Latitude', 'Longitude', 'Status Kondisi', 'Tahun Perolehan', 'Sumber Anggaran', 'Panjang Terbangun (m)', 'Keterangan/Detail'];
     const row = [
       item.id,
       categoryLabel,
@@ -49,6 +49,7 @@ export default function DataTable({
       item.lng,
       item.status,
       item.tahun,
+      item.sumber_anggaran || '',
       item.panjang_terbangun || '',
       item.detail ? item.detail.replace(/"/g, '""') : ''
     ];
@@ -69,7 +70,7 @@ export default function DataTable({
   // CSV Exporter for whole filtered table
   const exportTableCSV = () => {
     if (filteredData.length === 0) return;
-    const headers = ['ID', 'Kategori', 'Nama Sarpras', 'Lokasi (Desa)', 'Kecamatan', 'Latitude', 'Longitude', 'Status Kondisi', 'Tahun Perolehan', 'Panjang Terbangun (m)', 'Keterangan/Detail'];
+    const headers = ['ID', 'Kategori', 'Nama Sarpras', 'Lokasi (Desa)', 'Kecamatan', 'Latitude', 'Longitude', 'Status Kondisi', 'Tahun Perolehan', 'Sumber Anggaran', 'Panjang Terbangun (m)', 'Keterangan/Detail'];
     const rows = filteredData.map(item => [
       item.id,
       categoryLabel,
@@ -80,6 +81,7 @@ export default function DataTable({
       item.lng,
       item.status,
       item.tahun,
+      item.sumber_anggaran || '',
       item.panjang_terbangun || '',
       item.detail ? item.detail.replace(/"/g, '""') : ''
     ]);
@@ -137,7 +139,7 @@ export default function DataTable({
               <polyline points="7 10 12 15 17 10" />
               <line x1="12" y1="15" x2="12" y2="3" />
             </svg>
-            Unduh Excel/CSV
+            Ekspor Excel (Siap Print)
           </button>
         </div>
 
@@ -171,6 +173,7 @@ export default function DataTable({
                 <th>Lokasi</th>
                 <th>Kecamatan</th>
                 <th>Tahun</th>
+                <th>Sumber Anggaran</th>
                 <th>Kondisi</th>
                 <th style={{ width: '150px', textAlign: 'center' }}>Aksi</th>
               </tr>
@@ -189,6 +192,9 @@ export default function DataTable({
                   <td>{item.desa || item.lokasi}</td>
                   <td>{item.kecamatan}</td>
                   <td>{item.tahun}</td>
+                  <td>
+                    <span style={{ fontWeight: 600, color: 'var(--text-main)' }}>{item.sumber_anggaran || '-'}</span>
+                  </td>
                   <td>
                     <span className={`status-badge status-${item.status.toLowerCase().replace(' ', '-')}`}>
                       {item.status}

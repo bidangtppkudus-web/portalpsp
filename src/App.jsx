@@ -106,6 +106,7 @@ export default function App() {
           status: itemForm.status,
           tahun: itemForm.tahun,
           panjang_terbangun: itemForm.panjang_terbangun || null,
+          sumber_anggaran: itemForm.sumber_anggaran || null,
           lat: itemForm.lat,
           lng: itemForm.lng,
           foto: itemForm.foto
@@ -130,6 +131,7 @@ export default function App() {
           status: itemForm.status,
           tahun: itemForm.tahun,
           panjang_terbangun: itemForm.panjang_terbangun || null,
+          sumber_anggaran: itemForm.sumber_anggaran || null,
           lat: itemForm.lat,
           lng: itemForm.lng,
           foto: itemForm.foto
