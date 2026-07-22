@@ -274,10 +274,10 @@ export default function CrudModal({ item, categoryKey, onClose, onSave }) {
                 onChange={handleChange}
               >
                 <option value="">-- Pilih Sumber Anggaran --</option>
-                <option value="APBD">APBD</option>
+                <option value="APBN">APBN</option>
+                <option value="APBD PROV">APBD PROV</option>
+                <option value="APBD KABUPATEN">APBD KABUPATEN</option>
                 <option value="DAK">DAK</option>
-                <option value="DBHCHT">DBHCHT</option>
-                <option value="Banprov">Banprov</option>
                 <option value="Lainnya">Lainnya</option>
               </select>
             </div>

@@ -28,8 +28,14 @@ export default function App() {
   const [showCrudModal, setShowCrudModal] = useState(false);
   const [crudEditingItem, setCrudEditingItem] = useState(null);
 
-  // Fetch from Supabase
+  // Fetch from Supabase and LocalStorage
   const fetchData = async () => {
+    // Selalu load dari localStorage terlebih dahulu agar data asli user tidak hilang
+    const storedData = localStorage.getItem('portal_psp_data');
+    if (storedData) {
+      setData(JSON.parse(storedData));
+    }
+
     if (!import.meta.env.VITE_SUPABASE_URL) return; // Skip if not configured
     const { data: supaData, error } = await supabase
       .from('infrastruktur')
@@ -38,8 +44,10 @@ export default function App() {
     
     if (error) {
       console.error('Error fetching data:', error);
-    } else if (supaData) {
+    } else if (supaData && supaData.length > 0 && !storedData) {
+      // Jika localStorage kosong, tapi supabase ada isinya, pakai supabase
       setData(supaData);
+      localStorage.setItem('portal_psp_data', JSON.stringify(supaData));
     }
   };
 
@@ -94,56 +102,59 @@ export default function App() {
 
   // CRUD Handlers
   const handleSaveItem = async (itemForm) => {
+    let updatedData = [];
     if (crudEditingItem) {
       // Edit mode
-      const { error } = await supabase
-        .from('infrastruktur')
-        .update({
-          nama: itemForm.nama,
-          category: itemForm.category,
-          kecamatan: itemForm.kecamatan,
-          desa: itemForm.lokasi,
-          status: itemForm.status,
-          tahun: itemForm.tahun,
-          panjang_terbangun: itemForm.panjang_terbangun || null,
-          sumber_anggaran: itemForm.sumber_anggaran || null,
-          lat: itemForm.lat,
-          lng: itemForm.lng,
-          foto: itemForm.foto
-        })
-        .eq('id', itemForm.id);
+      updatedData = data.map(item => item.id === itemForm.id ? itemForm : item);
+      setData(updatedData);
+      localStorage.setItem('portal_psp_data', JSON.stringify(updatedData));
       
-      if (!error) {
-        setData(data.map(item => item.id === itemForm.id ? itemForm : item));
-      } else {
-        alert("Gagal mengupdate data. Pastikan konfigurasi Supabase benar.");
-        console.error(error);
+      if (import.meta.env.VITE_SUPABASE_URL) {
+        const { error } = await supabase
+          .from('infrastruktur')
+          .update({
+            nama: itemForm.nama,
+            category: itemForm.category,
+            kecamatan: itemForm.kecamatan,
+            desa: itemForm.lokasi,
+            status: itemForm.status,
+            tahun: itemForm.tahun,
+            panjang_terbangun: itemForm.panjang_terbangun || null,
+            sumber_anggaran: itemForm.sumber_anggaran || null,
+            lat: itemForm.lat,
+            lng: itemForm.lng,
+            foto: itemForm.foto
+          })
+          .eq('id', itemForm.id);
+        if (error) console.error("Supabase Error:", error);
       }
     } else {
       // Add mode
-      const { data: newRow, error } = await supabase
-        .from('infrastruktur')
-        .insert([{
-          nama: itemForm.nama,
-          category: itemForm.category,
-          kecamatan: itemForm.kecamatan,
-          desa: itemForm.lokasi,
-          status: itemForm.status,
-          tahun: itemForm.tahun,
-          panjang_terbangun: itemForm.panjang_terbangun || null,
-          sumber_anggaran: itemForm.sumber_anggaran || null,
-          lat: itemForm.lat,
-          lng: itemForm.lng,
-          foto: itemForm.foto
-        }])
-        .select()
-        .single();
-      
-      if (!error && newRow) {
-        setData([newRow, ...data]);
-      } else {
-        alert("Gagal menambah data. Pastikan konfigurasi Supabase benar.");
-        console.error(error);
+      const newItem = {
+        ...itemForm,
+        id: itemForm.id || `${itemForm.category.substring(0, 4)}-${Date.now()}`
+      };
+      updatedData = [newItem, ...data];
+      setData(updatedData);
+      localStorage.setItem('portal_psp_data', JSON.stringify(updatedData));
+
+      if (import.meta.env.VITE_SUPABASE_URL) {
+        const { error } = await supabase
+          .from('infrastruktur')
+          .insert([{
+            nama: newItem.nama,
+            category: newItem.category,
+            kecamatan: newItem.kecamatan,
+            desa: newItem.lokasi,
+            status: newItem.status,
+            tahun: newItem.tahun,
+            panjang_terbangun: newItem.panjang_terbangun || null,
+            sumber_anggaran: newItem.sumber_anggaran || null,
+            lat: newItem.lat,
+            lng: newItem.lng,
+            foto: newItem.foto
+          }]);
+        if (error) console.error("Supabase Error:", error);
       }
     }
     setShowCrudModal(false);
@@ -152,16 +163,16 @@ export default function App() {
 
   const handleDeleteItem = async (itemToDelete) => {
     if (window.confirm(`Apakah Anda yakin ingin menghapus data "${itemToDelete.nama}"?`)) {
-      const { error } = await supabase
-        .from('infrastruktur')
-        .delete()
-        .eq('id', itemToDelete.id);
-        
-      if (!error) {
-        setData(data.filter(item => item.id !== itemToDelete.id));
-      } else {
-        alert("Gagal menghapus data");
-        console.error(error);
+      const updatedData = data.filter(item => item.id !== itemToDelete.id);
+      setData(updatedData);
+      localStorage.setItem('portal_psp_data', JSON.stringify(updatedData));
+
+      if (import.meta.env.VITE_SUPABASE_URL) {
+        const { error } = await supabase
+          .from('infrastruktur')
+          .delete()
+          .eq('id', itemToDelete.id);
+        if (error) console.error("Supabase Error:", error);
       }
     }
   };
