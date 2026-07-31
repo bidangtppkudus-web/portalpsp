@@ -28,15 +28,17 @@ export default function App() {
   const [showCrudModal, setShowCrudModal] = useState(false);
   const [crudEditingItem, setCrudEditingItem] = useState(null);
 
-  // Fetch from Supabase and LocalStorage
+  // Fetch from Supabase and LocalStorage with Auto-Sync
   const fetchData = async () => {
-    // Selalu load dari localStorage terlebih dahulu agar data asli user tidak hilang
     const storedData = localStorage.getItem('portal_psp_data');
+    let localData = [];
     if (storedData) {
-      setData(JSON.parse(storedData));
+      localData = JSON.parse(storedData);
+      setData(localData); // Tampilkan data lokal segera (fast UX)
     }
 
     if (!import.meta.env.VITE_SUPABASE_URL) return; // Skip if not configured
+    
     const { data: supaData, error } = await supabase
       .from('infrastruktur')
       .select('*')
@@ -44,10 +46,53 @@ export default function App() {
     
     if (error) {
       console.error('Error fetching data:', error);
-    } else if (supaData && supaData.length > 0 && !storedData) {
-      // Jika localStorage kosong, tapi supabase ada isinya, pakai supabase
-      setData(supaData);
-      localStorage.setItem('portal_psp_data', JSON.stringify(supaData));
+    } else if (supaData) {
+      const supaIds = new Set(supaData.map(item => item.id));
+      
+      // Cari data lokal yang belum ada di Supabase
+      const missingInSupa = localData.filter(item => !supaIds.has(item.id));
+      
+      // Gabungkan data Supabase dengan data lokal yang hilang
+      const combinedData = [...supaData, ...missingInSupa];
+      
+      setData(combinedData);
+      localStorage.setItem('portal_psp_data', JSON.stringify(combinedData));
+      
+      // Auto-upload data lokal yang belum masuk ke Supabase
+      if (missingInSupa.length > 0) {
+        for (const item of missingInSupa) {
+          try {
+            await supabase.from('infrastruktur').insert([{
+              id: item.id,
+              nama: item.nama,
+              category: item.category,
+              kecamatan: item.kecamatan,
+              desa: item.lokasi || item.desa,
+              status: item.status,
+              tahun: item.tahun,
+              panjang_terbangun: item.panjang_terbangun || null,
+              sumber_anggaran: item.sumber_anggaran || null,
+              lat: item.lat,
+              lng: item.lng,
+              foto: item.foto || null,
+              detail: item.detail || null
+            }]);
+          } catch(e) {
+            console.error("Auto-sync error", e);
+          }
+        }
+        
+        // Refresh data setelah upload selesai
+        const { data: finalData } = await supabase
+          .from('infrastruktur')
+          .select('*')
+          .order('created_at', { ascending: false });
+          
+        if (finalData) {
+          setData(finalData);
+          localStorage.setItem('portal_psp_data', JSON.stringify(finalData));
+        }
+      }
     }
   };
 
