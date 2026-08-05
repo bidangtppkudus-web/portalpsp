@@ -64,16 +64,16 @@ export default function App() {
           try {
             await supabase.from('infrastruktur').insert([{
               id: item.id,
-              nama: item.nama,
-              category: item.category,
-              kecamatan: item.kecamatan,
-              desa: item.lokasi || item.desa,
-              status: item.status,
-              tahun: item.tahun,
-              panjang_terbangun: item.panjang_terbangun || null,
+              nama: item.nama || 'Tanpa Nama',
+              category: item.category || 'lainnya',
+              kecamatan: item.kecamatan || 'Kota',
+              desa: item.lokasi || item.desa || '-',
+              status: item.status || 'Baik',
+              tahun: item.tahun ? Number(item.tahun) : new Date().getFullYear(),
+              panjang_terbangun: item.panjang_terbangun ? Number(item.panjang_terbangun) : null,
               sumber_anggaran: item.sumber_anggaran || null,
-              lat: item.lat,
-              lng: item.lng,
+              lat: item.lat ? Number(item.lat) : 0,
+              lng: item.lng ? Number(item.lng) : 0,
               foto: item.foto || null,
               detail: item.detail || null
             }]);
@@ -81,17 +81,9 @@ export default function App() {
             console.error("Auto-sync error", e);
           }
         }
-        
-        // Refresh data setelah upload selesai
-        const { data: finalData } = await supabase
-          .from('infrastruktur')
-          .select('*')
-          .order('created_at', { ascending: false });
-          
-        if (finalData) {
-          setData(finalData);
-          localStorage.setItem('portal_psp_data', JSON.stringify(finalData));
-        }
+        // Kita TIDAK me-refresh dan menimpa localStorage di sini.
+        // Jika gagal upload, data akan tetap ada di localStorage (combinedData) 
+        // dan akan mencoba diupload lagi di sesi berikutnya.
       }
     }
   };
