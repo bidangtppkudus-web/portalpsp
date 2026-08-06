@@ -97,6 +97,43 @@ export default function App() {
     if (storedUser) {
       setUser(JSON.parse(storedUser));
     }
+
+    if (!import.meta.env.VITE_SUPABASE_URL) return;
+
+    // Real-time subscription (Menerima data secara langsung tanpa refresh)
+    const channel = supabase
+      .channel('public:infrastruktur')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'infrastruktur' },
+        (payload) => {
+          console.log('Realtime update received!', payload);
+          
+          setData((currentData) => {
+             const { eventType, new: newRecord, old: oldRecord } = payload;
+             let updatedData = [...currentData];
+             
+             if (eventType === 'INSERT') {
+                // Cegah duplikasi jika data sudah ditambahkan secara lokal
+                if (!updatedData.find(item => item.id === newRecord.id)) {
+                   updatedData = [newRecord, ...updatedData];
+                }
+             } else if (eventType === 'UPDATE') {
+                updatedData = updatedData.map(item => item.id === newRecord.id ? newRecord : item);
+             } else if (eventType === 'DELETE') {
+                updatedData = updatedData.filter(item => item.id !== oldRecord.id);
+             }
+             
+             localStorage.setItem('portal_psp_data', JSON.stringify(updatedData));
+             return updatedData;
+          });
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   // Calculate statistics for Dashboard
