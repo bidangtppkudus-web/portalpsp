@@ -78,27 +78,26 @@ export default function CrudModal({ item, categoryKey, onClose, onSave }) {
     if (!formData.lokasi.trim()) tempErrors.lokasi = 'Lokasi/Desa wajib diisi';
     if (!formData.kecamatan) tempErrors.kecamatan = 'Kecamatan wajib dipilih';
     
-    // Coordinates checks for Kudus range approx lat [-7.0 to -6.5], lng [110.6 to 111.0]
     if (formData.lat === '') {
       tempErrors.lat = 'Latitude wajib diisi';
-    } else if (formData.lat > -6.0 || formData.lat < -7.5) {
-      tempErrors.lat = 'Latitude tidak valid untuk wilayah Kudus (rentang -6.5 s/d -7.0)';
     }
 
     if (formData.lng === '') {
       tempErrors.lng = 'Longitude wajib diisi';
-    } else if (formData.lng < 110.5 || formData.lng > 111.2) {
-      tempErrors.lng = 'Longitude tidak valid untuk wilayah Kudus (rentang 110.7 s/d 111.0)';
     }
 
     if (!formData.tahun) {
       tempErrors.tahun = 'Tahun pembangunan wajib diisi';
-    } else if (formData.tahun < 1980 || formData.tahun > new Date().getFullYear()) {
-      tempErrors.tahun = `Tahun tidak valid (1980 - ${new Date().getFullYear()})`;
     }
 
     setErrors(tempErrors);
-    return Object.keys(tempErrors).length === 0;
+    
+    const isValid = Object.keys(tempErrors).length === 0;
+    if (!isValid) {
+      alert("Mohon lengkapi semua kolom yang wajib diisi (berciri tanda *) atau perbaiki isian yang salah.");
+    }
+    
+    return isValid;
   };
 
   const handleSubmit = (e) => {
