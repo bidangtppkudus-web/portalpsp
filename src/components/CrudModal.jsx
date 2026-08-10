@@ -56,18 +56,48 @@ export default function CrudModal({ item, categoryKey, onClose, onSave }) {
     const file = e.target.files[0];
     if (!file) return;
 
-    if (file.size > 2 * 1024 * 1024) {
-      setErrors(prev => ({ ...prev, foto: 'Ukuran foto terlalu besar. Maksimal 2MB.' }));
+    if (file.size > 10 * 1024 * 1024) {
+      setErrors(prev => ({ ...prev, foto: 'Ukuran foto terlalu besar. Maksimal 10MB.' }));
       return;
     }
 
     const reader = new FileReader();
-    reader.onloadend = () => {
-      setFormData(prev => ({
-        ...prev,
-        foto: reader.result
-      }));
-      setErrors(prev => ({ ...prev, foto: null }));
+    reader.onload = (event) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const MAX_WIDTH = 800;
+        const MAX_HEIGHT = 800;
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > MAX_WIDTH) {
+            height *= MAX_WIDTH / width;
+            width = MAX_WIDTH;
+          }
+        } else {
+          if (height > MAX_HEIGHT) {
+            width *= MAX_HEIGHT / height;
+            height = MAX_HEIGHT;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+
+        // Compress image to heavily reduce base64 size (prevents localStorage quota exceeded error)
+        const compressedBase64 = canvas.toDataURL('image/jpeg', 0.6);
+        
+        setFormData(prev => ({
+          ...prev,
+          foto: compressedBase64
+        }));
+        setErrors(prev => ({ ...prev, foto: null }));
+      };
+      img.src = event.target.result;
     };
     reader.readAsDataURL(file);
   };

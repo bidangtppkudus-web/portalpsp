@@ -181,7 +181,11 @@ export default function App() {
       // Edit mode
       updatedData = data.map(item => item.id === itemForm.id ? itemForm : item);
       setData(updatedData);
-      localStorage.setItem('portal_psp_data', JSON.stringify(updatedData));
+      try {
+        localStorage.setItem('portal_psp_data', JSON.stringify(updatedData));
+      } catch (e) {
+        console.warn("Storage penuh", e);
+      }
       
       if (import.meta.env.VITE_SUPABASE_URL) {
         const { error } = await supabase
@@ -211,7 +215,11 @@ export default function App() {
       };
       updatedData = [newItem, ...data];
       setData(updatedData);
-      localStorage.setItem('portal_psp_data', JSON.stringify(updatedData));
+      try {
+        localStorage.setItem('portal_psp_data', JSON.stringify(updatedData));
+      } catch (e) {
+        console.warn("Storage penuh", e);
+      }
 
       if (import.meta.env.VITE_SUPABASE_URL) {
         const { error } = await supabase
