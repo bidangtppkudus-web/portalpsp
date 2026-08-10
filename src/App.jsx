@@ -231,7 +231,12 @@ export default function App() {
             foto: newItem.foto || null,
             detail: newItem.detail || null
           }]);
-        if (error) console.error("Supabase Error:", error);
+        if (error) {
+          console.error("Supabase Error:", error);
+          alert("PERHATIAN! Gagal menyimpan ke Supabase: " + error.message + "\n\nPastikan Anda sudah menjalankan perintah SQL untuk mereset tabel!");
+        } else {
+          alert("Berhasil! Data tersimpan di Supabase.");
+        }
       }
     }
     setShowCrudModal(false);
