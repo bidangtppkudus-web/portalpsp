@@ -190,14 +190,15 @@ export default function App() {
             nama: itemForm.nama,
             category: itemForm.category,
             kecamatan: itemForm.kecamatan,
-            desa: itemForm.lokasi,
+            desa: itemForm.lokasi || itemForm.desa,
             status: itemForm.status,
             tahun: itemForm.tahun,
             panjang_terbangun: itemForm.panjang_terbangun || null,
             sumber_anggaran: itemForm.sumber_anggaran || null,
             lat: itemForm.lat,
             lng: itemForm.lng,
-            foto: itemForm.foto
+            foto: itemForm.foto || null,
+            detail: itemForm.detail || null
           })
           .eq('id', itemForm.id);
         if (error) console.error("Supabase Error:", error);
@@ -216,17 +217,19 @@ export default function App() {
         const { error } = await supabase
           .from('infrastruktur')
           .insert([{
+            id: newItem.id,
             nama: newItem.nama,
             category: newItem.category,
             kecamatan: newItem.kecamatan,
-            desa: newItem.lokasi,
+            desa: newItem.lokasi || newItem.desa,
             status: newItem.status,
             tahun: newItem.tahun,
             panjang_terbangun: newItem.panjang_terbangun || null,
             sumber_anggaran: newItem.sumber_anggaran || null,
             lat: newItem.lat,
             lng: newItem.lng,
-            foto: newItem.foto
+            foto: newItem.foto || null,
+            detail: newItem.detail || null
           }]);
         if (error) console.error("Supabase Error:", error);
       }
