@@ -114,7 +114,6 @@ export default function App() {
              let updatedData = [...currentData];
              
              if (eventType === 'INSERT') {
-                // Cegah duplikasi jika data sudah ditambahkan secara lokal
                 if (!updatedData.find(item => item.id === newRecord.id)) {
                    updatedData = [newRecord, ...updatedData];
                 }
@@ -124,7 +123,16 @@ export default function App() {
                 updatedData = updatedData.filter(item => item.id !== oldRecord.id);
              }
              
-             localStorage.setItem('portal_psp_data', JSON.stringify(updatedData));
+             // Sangat penting: gunakan setTimeout agar penyimpanan ke localStorage
+             // tidak berjalan di dalam siklus Render React yang bisa bikin white screen
+             setTimeout(() => {
+               try {
+                 localStorage.setItem('portal_psp_data', JSON.stringify(updatedData));
+               } catch(e) {
+                 console.warn("Storage penuh saat realtime", e);
+               }
+             }, 0);
+             
              return updatedData;
           });
         }
