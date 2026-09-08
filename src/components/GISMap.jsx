@@ -161,14 +161,23 @@ export default function GISMap({ data }) {
       });
 
       // Fit bounds if we have markers
-      if (validCoords.length > 0) {
+      // Saring koordinat yang "masuk akal" (sekitar wilayah Kudus/Jawa Tengah) untuk menghitung zoom kamera
+      // Ini mencegah peta zoom-out terlalu jauh hingga terlihat seluruh dunia jika ada data testing (seperti lat: 1, lng: 1)
+      const boundsCoords = validCoords.filter(coord => 
+        coord[0] >= -8.0 && coord[0] <= -5.0 && coord[1] >= 109.0 && coord[1] <= 112.0
+      );
+
+      if (boundsCoords.length > 0) {
         try {
-          const bounds = L.latLngBounds(validCoords);
+          const bounds = L.latLngBounds(boundsCoords);
           mapRef.current.fitBounds(bounds, { padding: [40, 40], maxZoom: 14 });
         } catch (e) {
           console.error("Leaflet bounds error:", e);
           mapRef.current.setView(kudusCenter, 12);
         }
+      } else if (validCoords.length > 0) {
+        // Jika ada marker tapi semuanya di luar Jawa Tengah, berpusat di marker pertama saja
+        mapRef.current.setView(validCoords[0], 12);
       } else {
         mapRef.current.setView(kudusCenter, 12);
       }
