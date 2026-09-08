@@ -100,9 +100,15 @@ export default function GISMap({ data }) {
       // Clear previous markers
       markerGroupRef.current.clearLayers();
 
+      // Collect valid coordinates for bounds
+      const validCoords = [];
+
       // Add new markers
       filteredData.forEach(item => {
-        if (!item.lat || !item.lng) return;
+        // Skip invalid coordinates
+        if (!item.lat || !item.lng || isNaN(item.lat) || isNaN(item.lng)) return;
+
+        validCoords.push([Number(item.lat), Number(item.lng)]);
 
         // Custom HTML popup markup matching the portal theme
         const popupHtml = `
@@ -143,7 +149,7 @@ export default function GISMap({ data }) {
           </div>
         `;
 
-        const marker = L.marker([item.lat, item.lng], {
+        const marker = L.marker([Number(item.lat), Number(item.lng)], {
           icon: createMarkerIcon(item.category)
         })
           .bindPopup(popupHtml, {
@@ -155,9 +161,14 @@ export default function GISMap({ data }) {
       });
 
       // Fit bounds if we have markers
-      if (filteredData.length > 0) {
-        const bounds = L.latLngBounds(filteredData.map(item => [item.lat, item.lng]));
-        mapRef.current.fitBounds(bounds, { padding: [40, 40], maxZoom: 14 });
+      if (validCoords.length > 0) {
+        try {
+          const bounds = L.latLngBounds(validCoords);
+          mapRef.current.fitBounds(bounds, { padding: [40, 40], maxZoom: 14 });
+        } catch (e) {
+          console.error("Leaflet bounds error:", e);
+          mapRef.current.setView(kudusCenter, 12);
+        }
       } else {
         mapRef.current.setView(kudusCenter, 12);
       }
