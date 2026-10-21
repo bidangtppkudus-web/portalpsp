@@ -75,7 +75,7 @@ export default function Sidebar({ activeMenu, onMenuChange }) {
                   <path d="M9 19h5M2 19h1M17 16V8h-6V4H7v4H4v8h6v3" />
                 </>
               );
-            } else if (key === 'bangunan_konvensional') {
+            } else if (key === 'bangunan_konvensional' || key === 'bangunan_konservasi_air') {
               iconPath = (
                 <>
                   <path d="M3 21h18M3 10l9-7 9 7v11H3V10z" />

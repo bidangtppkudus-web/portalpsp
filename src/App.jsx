@@ -287,7 +287,12 @@ export default function App() {
 
   // Get data filtered by category for active table views
   const getCategoryData = () => {
-    return data.filter(item => item.category === activeMenu);
+    return data.filter(item => {
+      if (activeMenu === 'bangunan_konvensional') {
+        return item.category === 'bangunan_konvensional' || item.category === 'bangunan_konservasi_air' || item.category === 'bangunan';
+      }
+      return item.category === activeMenu;
+    });
   };
 
   if (!user && !isGuest) {
@@ -445,7 +450,12 @@ export default function App() {
               {/* Sebaran per Kategori Grid */}
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
                 {Object.entries(CATEGORIES).map(([key, label]) => {
-                  const catCount = data.filter(item => item.category === key).length;
+                  const catCount = data.filter(item => {
+                    if (key === 'bangunan_konvensional') {
+                      return item.category === 'bangunan_konvensional' || item.category === 'bangunan_konservasi_air' || item.category === 'bangunan';
+                    }
+                    return item.category === key;
+                  }).length;
                   return (
                     <div 
                       key={key} 

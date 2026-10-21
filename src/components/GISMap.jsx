@@ -16,7 +16,9 @@ export const CATEGORY_COLORS = {
   irigasi_perpipaan: '#06b6d4',      // Cyan (Pipa)
   jalan_usaha_tani: '#f59e0b',       // Amber/Orange (Jalan Tani)
   alat_mesin_pertanian: '#8b5cf6',   // Purple (Alsintan)
-  bangunan_konvensional: '#e11d48',  // Rose/Red (Bangunan/Gudang)
+  bangunan_konvensional: '#e11d48',  // Rose/Red (Bangunan Konservasi Air)
+  bangunan_konservasi_air: '#e11d48',
+  bangunan: '#e11d48',
 };
 
 const createMarkerIcon = (category) => {
@@ -47,7 +49,12 @@ export default function GISMap({ data }) {
 
   // Filter data based on selected category on the map
   const filteredData = selectedCategoryFilter 
-    ? data.filter(item => item.category === selectedCategoryFilter)
+    ? data.filter(item => {
+        if (selectedCategoryFilter === 'bangunan_konvensional') {
+          return item.category === 'bangunan_konvensional' || item.category === 'bangunan_konservasi_air' || item.category === 'bangunan';
+        }
+        return item.category === selectedCategoryFilter;
+      })
     : data;
 
   // Initialize Map
@@ -142,7 +149,7 @@ export default function GISMap({ data }) {
                 ` : ''}
                 <div class="map-popup-row">
                   <span class="map-popup-label">Kategori:</span>
-                  <span class="map-popup-val">${CATEGORIES[item.category] || item.category}</span>
+                  <span class="map-popup-val">${CATEGORIES[item.category] || (item.category === 'bangunan_konservasi_air' || item.category === 'bangunan' ? 'Bangunan Konservasi Air' : item.category)}</span>
                 </div>
               </div>
             </div>

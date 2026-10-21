@@ -4,7 +4,7 @@ export const CATEGORIES = {
   irigasi_perpipaan: 'Irigasi Perpipaan',
   jalan_usaha_tani: 'Jalan Usaha Tani',
   alat_mesin_pertanian: 'Alat Mesin Pertanian',
-  bangunan_konvensional: 'Bangunan Konvensional',
+  bangunan_konvensional: 'Bangunan Konservasi Air',
 };
 
 export const INITIAL_DATA = [
@@ -187,31 +187,31 @@ export const INITIAL_DATA = [
     foto: 'https://images.unsplash.com/photo-1530595467537-0b5996c41f2d?auto=format&fit=crop&w=600&q=80',
   },
 
-  // 6. Bangunan Konvensional (Conventional Buildings)
+  // 6. Bangunan Konservasi Air (Water Conservation Structures)
   {
     id: 'bkon-001',
     category: 'bangunan_konvensional',
-    nama: 'Gudang Lumbung Pangan Masyarakat',
+    nama: 'Embung Pertanian / Dam Parit',
     lokasi: 'Desa Gulang',
     kecamatan: 'Mejobo',
     lat: -6.8294,
     lng: 110.8794,
     status: 'Baik',
     tahun: 2022,
-    detail: 'Gudang penyimpanan gabah kering giling berkapasitas 50 ton dilengkapi dengan lantai jemur semen.',
+    detail: 'Bangunan konservasi air berupa penampung air hujan dan limpasan untuk suplai irigasi pada musim kemarau.',
     foto: 'https://images.unsplash.com/photo-1592417817098-8f3d6eb19675?auto=format&fit=crop&w=600&q=80',
   },
   {
     id: 'bkon-002',
     category: 'bangunan_konvensional',
-    nama: 'Gedung Pusat Pelatihan Pertanian Swadaya',
+    nama: 'Sumur Resapan / Long Storage',
     lokasi: 'Desa Loram Kulon',
     kecamatan: 'Jati',
     lat: -6.8354,
     lng: 110.8351,
     status: 'Baik',
     tahun: 2020,
-    detail: 'Gedung pertemuan dan pelatihan pembuatan pupuk organik serta teknik budidaya padi ramah lingkungan.',
+    detail: 'Bangunan konservasi air untuk konservasi air tanah dan retensi air bagi lahan pertanian sekitarnya.',
     foto: 'https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=600&q=80',
   }
 ];
